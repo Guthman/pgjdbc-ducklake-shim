@@ -1,0 +1,61 @@
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions: {}
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false  # never abort a half-published release
+
+jobs:
+  release:
+    name: Build, attest and publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write      # create the release
+      id-token: write      # sign the provenance attestation
+      attestations: write  # store it
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # No dependency cache: a release build must not restore state another workflow could have written.
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: temurin
+          java-version: "25"
+
+      - name: Tag must match pom version
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          version=$(mvn -B -q help:evaluate -Dexpression=project.version -DforceStdout)
+          if [ "v$version" != "$TAG" ]; then
+            echo "::error::tag $TAG does not match pom version $version"
+            exit 1
+          fi
+
+      - name: Test and package
+        run: mvn -B -ntp verify
+
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: target/pgjdbc-ducklake-shim-*.jar
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          gh release create "$TAG" target/pgjdbc-ducklake-shim-*.jar \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "$TAG" \
+            --generate-notes \
+            --notes "Add the jar to a duplicated PostgreSQL driver in DataGrip; see the README.
+
+          Verify provenance: \`gh attestation verify pgjdbc-ducklake-shim-${TAG#v}.jar --repo $GITHUB_REPOSITORY\`"

@@ -19,13 +19,13 @@ Once DataGrip adds pg_ducklake's wording to its list, you don't need this shim.
 
 ## Fix
 
-This driver wraps pgjdbc. When it sees that one DuckDB error, it appends `[column "ctid" does not exist]` to the message. It passes every other error and call through unchanged. The original exception is kept as the cause. It's not an unelegant workaround, but it's the best that we can do.
+This driver wraps pgjdbc. When it sees that one DuckDB error, it appends `[column "ctid" does not exist]` to the message. It passes every other error and call through unchanged. The original exception is kept as the cause. It's an inelegant workaround, but it's the best we can do.
 
 ## Install in DataGrip
 
 ### 1. Get the jar
 
-Build it with `mvn package` (you get `target/pgjdbc-ducklake-shim-*.jar`), or download it from this repo.
+Build it with `mvn package` (you get `target/pgjdbc-ducklake-shim-*.jar`), or download it from [Releases](https://github.com/Guthman/pgjdbc-ducklake-shim/releases).
 
 ### 2. Create the driver
 
@@ -74,3 +74,7 @@ The integration tests start `pgducklake/pgducklake`, create a DuckLake table, a 
 
 In the data source, open **Advanced → VM options** and add
 `-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=127.0.0.1:5005`, then reconnect and attach a debugger to port 5005. VS Code users can use the included **Attach: DataGrip driver JVM** launch configuration.
+
+## License
+
+BSD 2-Clause, same as [pgjdbc](https://github.com/pgjdbc/pgjdbc/blob/master/LICENSE). The jar does not bundle pgjdbc.

@@ -6,11 +6,23 @@
 
   <groupId>io.github.guthman</groupId>
   <artifactId>pgjdbc-ducklake-shim</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.1.0</version>
   <packaging>jar</packaging>
 
   <name>pgjdbc-ducklake-shim</name>
   <description>JDBC driver wrapper around pgjdbc that lets DataGrip open pg_ducklake tables.</description>
+  <url>https://github.com/Guthman/pgjdbc-ducklake-shim</url>
+
+  <licenses>
+    <license>
+      <name>BSD-2-Clause</name>
+      <url>https://opensource.org/license/bsd-2-clause</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <url>https://github.com/Guthman/pgjdbc-ducklake-shim</url>
+  </scm>
 
   <properties>
     <maven.compiler.release>17</maven.compiler.release>
@@ -51,6 +63,16 @@
   </dependencies>
 
   <build>
+    <resources>
+      <!-- BSD-2-Clause: binary redistributions must carry the notice. -->
+      <resource>
+        <directory>${project.basedir}</directory>
+        <includes>
+          <include>LICENSE</include>
+        </includes>
+        <targetPath>META-INF</targetPath>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
