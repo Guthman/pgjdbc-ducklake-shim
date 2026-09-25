@@ -1,0 +1,35 @@
+version: 2
+
+# Weekly, grouped, and with a 7-day cooldown so a freshly published (possibly compromised)
+# release is not pulled in until it has been public for a week.
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    commit-message:
+      prefix: "chore(deps):"
+    groups:
+      github-actions:
+        patterns: ["*"]
+    cooldown:
+      default-days: 7
+
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    commit-message:
+      prefix: "chore(deps):"
+    groups:
+      # pgjdbc on its own: it is the one users pair with this jar, so its bumps deserve their own PR.
+      pgjdbc:
+        patterns: ["org.postgresql:*"]
+      test-and-build:
+        patterns: ["*"]
+        exclude-patterns: ["org.postgresql:*"]
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 5
