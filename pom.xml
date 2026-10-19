@@ -27,7 +27,7 @@
   <properties>
     <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <pgjdbc.version>42.7.13</pgjdbc.version>
+    <pgjdbc.version>42.7.14</pgjdbc.version>
     <junit.version>6.1.3</junit.version>
     <testcontainers.version>2.0.5</testcontainers.version>
     <!-- Override with -Dducklake.image=pgducklake/pgducklake:18-main to test against the latest build. -->
